@@ -48,12 +48,18 @@ namespace Moryx.Runtime.Tests.ResourcesDrivers
         {
             lock (StateLock)
             {
-                State.Receive();
-                Received?.Invoke(this,null);
-                Thread.Sleep(5000);
-                Console.WriteLine("");
-                Foo2?.Invoke(this,null);
+                State.Receive();              
             }
+        }
+
+        internal void RaiseReceivedEvent(object e)
+        {
+            Received?.Invoke(this, e);
+        }
+
+        internal void RaiseFoo2Event(object e)
+        {
+            Foo2?.Invoke(this, e);
         }
     }
 }

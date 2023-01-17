@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Moryx.Runtime.Tests.ResourcesDrivers.DrvierStates
@@ -19,6 +20,8 @@ namespace Moryx.Runtime.Tests.ResourcesDrivers.DrvierStates
         internal virtual void Receive()
         {
             NextState(StateConnecting);
+            Thread.Sleep(5000);
+            Driver.RaiseReceivedEvent(null);
         }
 
         internal virtual void Foo()

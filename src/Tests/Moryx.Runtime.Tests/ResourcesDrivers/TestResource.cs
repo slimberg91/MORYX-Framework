@@ -2,7 +2,6 @@
 using Moryx.Runtime.Tests.ResourcesDrivers.ResourceStates;
 using Moryx.StateMachines;
 using System;
-using System.Threading;
 
 namespace Moryx.Runtime.Tests.ResourcesDrivers
 {
@@ -20,30 +19,11 @@ namespace Moryx.Runtime.Tests.ResourcesDrivers
         public void Initialize()
         {
             StateMachine.Initialize(this).With<ResourceBaseState>();
-        }
-
-        public void StartProduction()
-        {
-            lock(StateLock)
-            {
-                Driver.AnotherCallToTheDriver();
-            }
-        }
-        
-
+        }  
+       
         public void Start()
         {
-            Driver.Received += OnDriverMessageReceived;
-            Driver.Foo2 += OnDriverFoo;
-            ResourceEvent?.Invoke(this,null);
-        }
-
-        private void OnDriverFoo(object sender, object e)
-        {
-            lock (StateLock)
-            {
-                Console.WriteLine("Dings");
-            }
+            Driver.Received += OnDriverMessageReceived;           
         }
 
         public void Stop()
@@ -64,6 +44,12 @@ namespace Moryx.Runtime.Tests.ResourcesDrivers
             State = (ResourceBaseState)state;
         }
 
-        
+        public void StartProduction()
+        {
+            lock (StateLock)
+            {
+                State.StartProducing();
+            }
+        }     
     }
 }

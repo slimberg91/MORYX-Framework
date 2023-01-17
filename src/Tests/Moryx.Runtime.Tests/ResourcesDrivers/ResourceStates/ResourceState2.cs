@@ -11,9 +11,9 @@
             base.OnDriverMessageReceived();
         }
 
-        internal override void Whatever()
+        internal override void StartProducing()
         {
-
+            base.StartProducing();
         }
     }
 }

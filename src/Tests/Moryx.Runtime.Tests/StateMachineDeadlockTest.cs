@@ -1,10 +1,6 @@
-﻿using Moq;
-using Moryx.Configuration;
-using Moryx.Runtime.Kernel;
-using Moryx.Runtime.Tests.Mocks;
-using Moryx.Runtime.Tests.Modules;
-using Moryx.Runtime.Tests.ResourcesDrivers;
+﻿using Moryx.Runtime.Tests.ResourcesDrivers;
 using NUnit.Framework;
+using System.Threading;
 
 namespace Moryx.Runtime.Tests
 {
@@ -19,10 +15,7 @@ namespace Moryx.Runtime.Tests
         public void SetUp() {
             _driver = new TestDriver();
             _resource = new TestResource();
-
-            _resource.Driver = _driver;
-            
-           
+            _resource.Driver = _driver;       
         }
         
         [Test]
@@ -31,8 +24,11 @@ namespace Moryx.Runtime.Tests
             _resource.Start();
             _driver.Initialize();
             _driver.Start();
-
-            _driver.CreateDeadlock();
+            Thread trd = new Thread(new ThreadStart(_driver.CreateDeadlock));
+            trd.Start();
+            Thread.Sleep(500);
+            Thread trd2 = new Thread(new ThreadStart(_resource.StartProduction));
+            trd2.Start();
 
             _resource.Stop();
             _driver.Stop();

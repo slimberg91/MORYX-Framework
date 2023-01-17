@@ -13,15 +13,14 @@ namespace Moryx.Runtime.Tests.ResourcesDrivers.ResourceStates
 
         internal virtual void OnDriverMessageReceived()
         {
-            NextState(StateProducing);
-            Thread trd = new Thread(new ThreadStart(Resource.StartProduction));
-            trd.Start();
+            System.Console.WriteLine("Message was received");
                       
         }
 
-        internal virtual void Whatever()
+        internal virtual void StartProducing()
         {
-
+            NextState(StateProducing);
+            Resource.StartProduction();
         }
 
         [StateDefinition(typeof(ResourceState1), IsInitial = true)]
