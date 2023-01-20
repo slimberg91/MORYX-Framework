@@ -2,6 +2,7 @@
 using Moryx.Runtime.Tests.ResourcesDrivers.ResourceStates;
 using Moryx.StateMachines;
 using System;
+using System.Collections.Generic;
 
 namespace Moryx.Runtime.Tests
 {
@@ -16,38 +17,38 @@ namespace Moryx.Runtime.Tests
 
         public Action RaiseStateChangedEvent { get; set; }
 
-        private bool StateChanged = false;
+        private List<Action> _actionsToBeDoneAfterTheLock = new List<Action>();
         public virtual void SetState(IState state)
         {
           
             lock (StateLock)
             {
                 State = (TState)state;
-                StateChanged = true;
+                State.AddActionToBeDoneAfterLock = AddActionToBeDoneAfterLock;
+                if(RaiseStateChangedEvent != null)
+                    _actionsToBeDoneAfterTheLock.Add(RaiseStateChangedEvent);
             }
             
         }
 
+        public void AddActionToBeDoneAfterLock(Action action)
+        {
+            _actionsToBeDoneAfterTheLock.Add(action);
+        }
+
         protected void LockedCall(Action action)
         {
-            var stateChanged = false;
+            var actionsToBeDone = new List<Action>();
             lock (StateLock)
-            {
+            {               
                 action();
-                stateChanged = StateChanged;
-                StateChanged = false;
+                actionsToBeDone = new List<Action>(_actionsToBeDoneAfterTheLock);
+                _actionsToBeDoneAfterTheLock = new List<Action>();
             }
-
-            // statte eines dictionaries eine Eventqueue im proxy erzeugen, der steps events hinzufügen können
-            // manche steps werfen mehrere events oder unterschiedliche nach bedingung
-            // diser Queue wird auch das stateChanged event hinzugefügt
-            // die Queue ist gelocked (genauso wie StateChanged)
-            var methodName = action.Method.Name;
-            if (State.events.ContainsKey(methodName))
-                State.events[methodName]();
-
-            if(stateChanged && RaiseStateChangedEvent != null)
-                RaiseStateChangedEvent();
+            foreach(var act in actionsToBeDone)
+            {
+                act.Invoke();
+            }
         }
 
     }
