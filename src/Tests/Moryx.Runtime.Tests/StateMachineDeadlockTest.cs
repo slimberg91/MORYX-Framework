@@ -7,7 +7,6 @@ namespace Moryx.Runtime.Tests
     [TestFixture]
     public class StateMachineDeadlockTest
     {
-
         private TestResource _resource;
         private TestDriver _driver;
 
@@ -15,7 +14,7 @@ namespace Moryx.Runtime.Tests
         public void SetUp() {
             _driver = new TestDriver();
             _resource = new TestResource();
-            _resource.Driver = _driver;       
+            _resource.Driver = _driver;     
         }
         
         [Test]
@@ -27,12 +26,8 @@ namespace Moryx.Runtime.Tests
             Thread trd = new Thread(new ThreadStart(_driver.CreateDeadlock));
             trd.Start();
             Thread.Sleep(500);
-            Thread trd2 = new Thread(new ThreadStart(_resource.StartProduction));
-            trd2.Start();
-
-            _resource.Stop();
-            _driver.Stop();
-
+            _resource.StartProduction();        
+            Assert.IsTrue(trd.IsAlive);     
         }
     }
 }

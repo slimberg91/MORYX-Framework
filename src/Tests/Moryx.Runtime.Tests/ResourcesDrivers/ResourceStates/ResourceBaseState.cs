@@ -5,10 +5,10 @@ namespace Moryx.Runtime.Tests.ResourcesDrivers.ResourceStates
 {
     internal abstract class ResourceBaseState : StateBase<TestResource>
     {
-        protected TestResource Resource;
+        
         protected ResourceBaseState(TestResource context, StateMap stateMap) : base(context, stateMap)
         {
-            Resource= context;
+          
         }
 
         internal virtual void OnDriverMessageReceived()
@@ -20,7 +20,7 @@ namespace Moryx.Runtime.Tests.ResourcesDrivers.ResourceStates
         internal virtual void StartProducing()
         {
             NextState(StateProducing);
-            Resource.StartProduction();
+            Context.Driver.AnotherCallToTheDriver();
         }
 
         [StateDefinition(typeof(ResourceState1), IsInitial = true)]

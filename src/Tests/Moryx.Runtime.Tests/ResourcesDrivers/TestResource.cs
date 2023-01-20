@@ -8,22 +8,17 @@ namespace Moryx.Runtime.Tests.ResourcesDrivers
     public class TestResource : IStateContext, IInitializablePlugin
     {
         public event EventHandler<object> ResourceEvent;
-        internal ResourceBaseState State { get; set; }
+        internal ResourceStateBaseProxy State = new ResourceStateBaseProxy();
         public TestDriver Driver { get; set; }
-
-        /// <summary>
-        /// Lock object to lock state handling
-        /// </summary>
-        private readonly object StateLock = new object();
 
         public void Initialize()
         {
             StateMachine.Initialize(this).With<ResourceBaseState>();
-        }  
-       
+        }
+
         public void Start()
         {
-            Driver.Received += OnDriverMessageReceived;           
+            Driver.Received += OnDriverMessageReceived;
         }
 
         public void Stop()
@@ -33,23 +28,21 @@ namespace Moryx.Runtime.Tests.ResourcesDrivers
 
         private void OnDriverMessageReceived(object sender, object e)
         {
-            lock (StateLock)
-            {
-                State.OnDriverMessageReceived();
-            }
+
+            State.OnDriverMessageReceived();
+
         }
 
         public void SetState(IState state)
         {
-            State = (ResourceBaseState)state;
+            State.SetState(state);
         }
 
         public void StartProduction()
         {
-            lock (StateLock)
-            {
-                State.StartProducing();
-            }
-        }     
+
+            State.StartProducing();
+
+        }
     }
 }

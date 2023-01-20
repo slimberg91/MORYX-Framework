@@ -17,6 +17,8 @@ namespace Moryx.StateMachines
     /// </summary>
     public abstract class StateBase : IState
     {
+        public Dictionary<string,Action> events = new Dictionary<string,Action>();
+
         /// <summary>
         /// Map of state names and their object reference
         /// </summary>

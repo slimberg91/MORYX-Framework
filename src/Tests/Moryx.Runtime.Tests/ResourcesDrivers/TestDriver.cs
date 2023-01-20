@@ -10,16 +10,13 @@ namespace Moryx.Runtime.Tests.ResourcesDrivers
     {
         public event EventHandler<object> Received;
         public event EventHandler<object> Foo2;
-        internal DriverBaseState State { get; set; }
+        internal DriverStateBaseProxy State = new DriverStateBaseProxy();
 
-        /// <summary>
-        /// Lock object to lock state handling
-        /// </summary>
-        private readonly object StateLock = new object();
+
 
         public void SetState(IState state)
         {
-            State = (DriverBaseState)state;
+           State.SetState(state);
         }
 
         public void Initialize()
@@ -39,17 +36,15 @@ namespace Moryx.Runtime.Tests.ResourcesDrivers
 
         public void AnotherCallToTheDriver()
         {
-            lock (StateLock)
-            {
-                Console.WriteLine("No Deadlock");
-            }
+
+            State.AnotherCall();
+            
         }
         public void CreateDeadlock()
         {
-            lock (StateLock)
-            {
+
                 State.Receive();              
-            }
+
         }
 
         internal void RaiseReceivedEvent(object e)

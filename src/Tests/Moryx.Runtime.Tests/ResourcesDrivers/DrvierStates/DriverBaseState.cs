@@ -10,18 +10,19 @@ namespace Moryx.Runtime.Tests.ResourcesDrivers.DrvierStates
 {
     internal abstract class DriverBaseState : StateBase<TestDriver>
     {
-
+       
         private TestDriver Driver;
         protected DriverBaseState(TestDriver context, StateMap stateMap) : base(context, stateMap)
         {
             Driver = context;
+            events.Add("Receive",() => { Driver.RaiseReceivedEvent(null); });
         }
 
         internal virtual void Receive()
         {
             NextState(StateConnecting);
             Thread.Sleep(5000);
-            Driver.RaiseReceivedEvent(null);
+            
         }
 
         internal virtual void Foo()
