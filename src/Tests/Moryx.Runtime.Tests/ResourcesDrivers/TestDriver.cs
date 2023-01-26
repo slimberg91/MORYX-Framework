@@ -2,7 +2,6 @@
 using Moryx.Runtime.Tests.ResourcesDrivers.DrvierStates;
 using Moryx.StateMachines;
 using System;
-using System.Threading;
 
 namespace Moryx.Runtime.Tests.ResourcesDrivers
 {
@@ -10,13 +9,11 @@ namespace Moryx.Runtime.Tests.ResourcesDrivers
     {
         public event EventHandler<object> Received;
         public event EventHandler<object> Foo2;
-        internal DriverStateBaseProxy State = new DriverStateBaseProxy();
-
-
+        internal StateContainer<DriverBaseState> StateContainer = new StateContainer<DriverBaseState>();
 
         public void SetState(IState state)
         {
-           State.SetState(state);
+           StateContainer.SetState(state);
         }
 
         public void Initialize()
@@ -37,13 +34,13 @@ namespace Moryx.Runtime.Tests.ResourcesDrivers
         public void AnotherCallToTheDriver()
         {
 
-            State.AnotherCall();
+            StateContainer.State.AnotherCall();
             
         }
         public void CreateDeadlock()
         {
 
-                State.Receive();              
+                StateContainer.State.Receive();              
 
         }
 

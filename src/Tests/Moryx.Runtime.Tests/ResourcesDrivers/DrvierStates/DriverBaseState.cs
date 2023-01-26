@@ -1,10 +1,6 @@
 ﻿using Moryx.StateMachines;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Moryx.Runtime.Tests.ResourcesDrivers.DrvierStates
 {
@@ -24,9 +20,9 @@ namespace Moryx.Runtime.Tests.ResourcesDrivers.DrvierStates
             AddActionToBeDoneAfterLock?.Invoke(() => { Context.RaiseReceivedEvent(null); });
         }
 
-        internal virtual void Foo()
+        internal virtual void AnotherCall()
         {
-
+            Console.WriteLine("NoDeadlock");
         }
 
         [StateDefinition(typeof(DriverState1), IsInitial = true)]

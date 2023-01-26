@@ -8,7 +8,7 @@ namespace Moryx.Runtime.Tests.ResourcesDrivers
     public class TestResource : IStateContext, IInitializablePlugin
     {
         public event EventHandler<object> ResourceEvent;
-        internal ResourceStateBaseProxy State = new ResourceStateBaseProxy();
+        internal StateContainer<ResourceBaseState> StateContainer = new();
         public TestDriver Driver { get; set; }
 
         public void Initialize()
@@ -29,19 +29,19 @@ namespace Moryx.Runtime.Tests.ResourcesDrivers
         private void OnDriverMessageReceived(object sender, object e)
         {
 
-            State.OnDriverMessageReceived();
+            StateContainer.State.OnDriverMessageReceived();
 
         }
 
         public void SetState(IState state)
         {
-            State.SetState(state);
+            StateContainer.SetState(state);
         }
 
         public void StartProduction()
         {
 
-            State.StartProducing();
+            StateContainer.State.StartProducing();
 
         }
     }

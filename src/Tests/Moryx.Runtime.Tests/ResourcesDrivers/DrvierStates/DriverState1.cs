@@ -11,7 +11,7 @@
             base.Receive();
         }
 
-        internal override void Foo()
+        internal override void AnotherCall()
         {
 
         }
